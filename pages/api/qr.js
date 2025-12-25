@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(400).send("ID kabel wajib")
   }
 
-  const url = `https://data.infinityteknik.net/kabel/${id}`
+  const url = `https://data.infinityteknik.net/api/kabel?id=KBL-000001`
 
   try {
     const qr = await QRCode.toDataURL(url, {
