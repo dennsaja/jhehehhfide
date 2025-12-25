@@ -17,7 +17,7 @@ export default function Home() {
 
       <div style={{ marginTop: 20 }}>
         <a
-          href="/kabel/KBL-000019"
+          href="/kabel/KBL-000006"
           style={{
             padding: "10px 16px",
             background: "#2563eb",
