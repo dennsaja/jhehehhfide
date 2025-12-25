@@ -13,66 +13,47 @@ export default function DetailKabel() {
     fetch(`/api/kabel?id=${id}`)
       .then(res => res.json())
       .then(result => {
-        if (result.error) {
-          setError(result.error)
-        } else {
-          setData(result)
-        }
+        if (result.error) setError(result.error)
+        else setData(result)
       })
       .catch(() => setError("Gagal memuat data"))
   }, [id])
 
   if (error) {
-    return (
-      <div style={styles.container}>
-        <h2>❌ {error}</h2>
-      </div>
-    )
+    return <div style={styles.page}>❌ {error}</div>
   }
 
   if (!data) {
-    return (
-      <div style={styles.container}>
-        <p>⏳ Memuat data kabel...</p>
-      </div>
-    )
+    return <div style={styles.page}>⏳ Memuat data kabel...</div>
   }
 
   return (
-    <div style={styles.container}>
+    <div style={styles.page}>
       <div style={styles.card}>
         <h1 style={styles.title}>{data.id_kabel}</h1>
 
         <table style={styles.table}>
           <tbody>
-            <tr>
-              <td>Merek</td>
-              <td>{data.merek}</td>
-            </tr>
-            <tr>
-              <td>Core</td>
-              <td>{data.core}</td>
-            </tr>
-            <tr>
-              <td>Panjang</td>
-              <td>{data.panjang_m} meter</td>
-            </tr>
-            <tr>
-              <td>Status</td>
-              <td>
+            <Row label="Merek" value={data.merek} />
+            <Row label="Core" value={data.core} />
+            <Row label="Panjang" value={`${data.panjang_m} meter`} />
+            <Row
+              label="Status"
+              value={
                 <span style={{
                   ...styles.badge,
                   background:
-                    data.status === "belum terpakai" ? "#facc15" : "#22c55e"
+                    data.status === "belum terpakai" ? "#fde68a" : "#bbf7d0"
                 }}>
                   {data.status}
                 </span>
-              </td>
-            </tr>
-            <tr>
-              <td>Tanggal</td>
-              <td>{new Date((data.tanggal - 25569) * 86400000).toLocaleDateString("id-ID")}</td>
-            </tr>
+              }
+            />
+            <Row
+              label="Tanggal"
+              value={new Date((data.tanggal - 25569) * 86400000)
+                .toLocaleDateString("id-ID")}
+            />
           </tbody>
         </table>
       </div>
@@ -80,37 +61,58 @@ export default function DetailKabel() {
   )
 }
 
+function Row({ label, value }) {
+  return (
+    <tr>
+      <td style={styles.label}>{label}</td>
+      <td style={styles.value}>{value}</td>
+    </tr>
+  )
+}
+
 const styles = {
-  container: {
+  page: {
     minHeight: "100vh",
-    background: "#0f172a",
-    color: "#e5e7eb",
+    background: "#ffffff",
+    fontFamily: "'Open Sans', sans-serif",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: 20
   },
   card: {
-    background: "#020617",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: 10,
     padding: 24,
-    borderRadius: 12,
     width: "100%",
     maxWidth: 420,
-    boxShadow: "0 10px 30px rgba(0,0,0,.5)"
+    boxShadow: "0 8px 20px rgba(0,0,0,0.06)"
   },
   title: {
     textAlign: "center",
-    marginBottom: 20
+    marginBottom: 20,
+    fontWeight: 700,
+    fontSize: 22
   },
   table: {
     width: "100%",
     borderCollapse: "collapse"
   },
+  label: {
+    padding: "8px 0",
+    color: "#6b7280",
+    fontWeight: 600
+  },
+  value: {
+    padding: "8px 0",
+    textAlign: "right",
+    fontWeight: 600
+  },
   badge: {
-    color: "#000",
     padding: "4px 10px",
-    borderRadius: 8,
-    fontWeight: "bold",
-    fontSize: 12
+    borderRadius: 6,
+    fontSize: 12,
+    fontWeight: 700
   }
 }
