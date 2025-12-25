@@ -1,4 +1,4 @@
-import Papa from "papaparse"
+import * as XLSX from "xlsx"
 
 export default async function handler(req, res) {
   const { id } = req.query
@@ -7,22 +7,28 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "ID kabel wajib" })
   }
 
-  const response = await fetch(
-    "https://raw.githubusercontent.com/USERNAME/REPO/main/kabel.csv"
-  )
+  try {
+    // fetch file xlsx dari public
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/kabel.xlsx`
+    )
 
-  const csvText = await response.text()
+    const arrayBuffer = await response.arrayBuffer()
 
-  const parsed = Papa.parse(csvText, {
-    header: true,
-    skipEmptyLines: true
-  })
+    const workbook = XLSX.read(arrayBuffer, { type: "array" })
+    const sheetName = workbook.SheetNames[0]
+    const sheet = workbook.Sheets[sheetName]
 
-  const kabel = parsed.data.find(row => row.id_kabel === id)
+    const data = XLSX.utils.sheet_to_json(sheet)
 
-  if (!kabel) {
-    return res.status(404).json({ error: "Data kabel tidak ditemukan" })
+    const kabel = data.find(row => row.id_kabel === id)
+
+    if (!kabel) {
+      return res.status(404).json({ error: "Data kabel tidak ditemukan" })
+    }
+
+    res.json(kabel)
+  } catch (err) {
+    res.status(500).json({ error: "Gagal membaca file Excel" })
   }
-
-  res.json(kabel)
 }
