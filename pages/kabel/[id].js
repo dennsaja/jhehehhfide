@@ -120,5 +120,13 @@ const styles = {
     borderRadius: 6,
     fontSize: 12,
     fontWeight: 700
+  },
+  qr: {
+  width: 180,
+  height: 180,
+  margin: "0 auto 20px",
+  display: "block",
+  border: "6px solid #f3f4f6",
+  borderRadius: 12
   }
 }
