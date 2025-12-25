@@ -1,6 +1,8 @@
+import fs from "fs"
+import path from "path"
 import * as XLSX from "xlsx"
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   const { id } = req.query
 
   if (!id) {
@@ -8,20 +10,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    // FETCH FILE XLSX LANGSUNG DARI PUBLIC (RELATIVE)
-    const response = await fetch(`${req.headers.origin}/kabel.xlsx`)
+    // PATH KE FILE EXCEL DI PUBLIC
+    const filePath = path.join(process.cwd(), "public", "kabel.xlsx")
 
-    if (!response.ok) {
-      throw new Error("File Excel tidak ditemukan")
-    }
+    // BACA FILE
+    const fileBuffer = fs.readFileSync(filePath)
 
-    const arrayBuffer = await response.arrayBuffer()
-    const workbook = XLSX.read(arrayBuffer, { type: "array" })
-
+    // PARSE EXCEL
+    const workbook = XLSX.read(fileBuffer, { type: "buffer" })
     const sheetName = workbook.SheetNames[0]
     const sheet = workbook.Sheets[sheetName]
     const data = XLSX.utils.sheet_to_json(sheet)
 
+    // CARI DATA
     const kabel = data.find(row => row.id_kabel === id)
 
     if (!kabel) {
@@ -29,8 +30,8 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json(kabel)
-  } catch (error) {
-    console.error(error)
+  } catch (err) {
+    console.error(err)
     return res.status(500).json({ error: "Gagal membaca file Excel" })
   }
 }
