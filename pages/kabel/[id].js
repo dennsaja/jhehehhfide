@@ -32,6 +32,12 @@ export default function DetailKabel() {
       <div style={styles.card}>
         <h1 style={styles.title}>{data.id_kabel}</h1>
 
+        <img
+        src={`/api/qr?id=${data.id_kabel}`}
+        alt="QR Kabel"
+        style={styles.qr}
+        />
+
         <table style={styles.table}>
           <tbody>
             <Row label="Merek" value={data.merek} />
