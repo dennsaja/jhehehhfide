@@ -4,19 +4,23 @@ export default async function handler(req, res) {
   const { id } = req.query
 
   if (!id) {
-    return res.status(400).send("ID kabel wajib")
+    res.status(400).send("ID kabel wajib")
+    return
   }
 
-  const url = `https://data.infinityteknik.net/api/kabel?id=KBL-000001`
+  const url = `https://data.infinityteknik.net/kabel/${id}`
 
   try {
-    const qr = await QRCode.toDataURL(url, {
+    const buffer = await QRCode.toBuffer(url, {
+      type: "png",
       width: 300,
       margin: 2
     })
 
-    res.status(200).json({ qr })
+    res.setHeader("Content-Type", "image/png")
+    res.status(200).send(buffer)
   } catch (err) {
-    res.status(500).send("Gagal membuat QR")
+    console.error(err)
+    res.status(500).send("Gagal generate QR")
   }
 }
