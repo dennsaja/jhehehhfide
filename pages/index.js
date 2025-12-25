@@ -17,6 +17,21 @@ export default function Home() {
 
       <div style={{ marginTop: 20 }}>
         <a
+          href="/kabel"
+          style={{
+            padding: "10px 16px",
+            background: "#2563eb",
+            color: "white",
+            borderRadius: 6,
+            textDecoration: "none"
+          }}
+        >
+          🔍 Cari Data
+        </a>
+      </div>
+          
+      <div style={{ marginTop: 20 }}>
+        <a
           href="/kabel/KBL-000006"
           style={{
             padding: "10px 16px",
